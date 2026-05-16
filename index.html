@@ -3,10 +3,1130 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Active Directory & Entra ID — Identity Layer Mastery</title>
+<title>Cloud-Native Workloads — Multi-Cloud Mastery Matrix</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0b0f19;
+    --surface: #111827;
+    --surface2: #1f2937;
+    --border: #374151;
+    --text: #f9fafb;
+    --muted: #9ca3af;
+
+    /* AWS — Safety Orange */
+    --aws: #ff9900;
+    --aws-light: rgba(255, 153, 0, 0.1);
+    --aws-mid: rgba(255, 153, 0, 0.25);
+
+    /* Azure — Horizon Blue */
+    --azure: #0078d4;
+    --azure-light: rgba(0, 120, 212, 0.1);
+    --azure-mid: rgba(0, 120, 212, 0.25);
+
+    /* GCP — Tech Green */
+    --gcp: #34a853;
+    --gcp-light: rgba(52, 168, 83, 0.1);
+    --gcp-mid: rgba(52, 168, 83, 0.25);
+
+    /* Security/Risk — Crimson */
+    --sec: #ef4444;
+    --sec-light: rgba(239, 68, 68, 0.1);
+
+    --radius: 12px;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Outfit', sans-serif;
+    font-weight: 400;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.015'%3E%3Cpath d='M40 0l40 40-40 40L0 40z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .progress-bar { position: fixed; top: 0; left: 0; width: 100%; height: 4px; background: var(--border); z-index: 200; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--aws), var(--azure), var(--gcp)); transition: width 0.1s; }
+
+  header {
+    background: linear-gradient(135deg, #070a13 0%, #111827 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 64px 0 52px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::after {
+    content: 'K8S';
+    position: absolute;
+    right: -10px;
+    bottom: -40px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 900;
+    font-size: 260px;
+    color: rgba(255, 255, 255, 0.015);
+    line-height: 1;
+    pointer-events: none;
+    letter-spacing: -15px;
+  }
+
+  .container { max-width: 1140px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  .header-eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--aws);
+    margin-bottom: 16px;
+    font-weight: 600;
+  }
+
+  h1 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: clamp(34px, 5.5vw, 58px);
+    line-height: 1.1;
+    letter-spacing: -2px;
+    margin-bottom: 20px;
+  }
+
+  h1 span.gradient-text {
+    background: linear-gradient(90deg, #ff9900, #0078d4, #34a853);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .header-desc {
+    color: var(--muted);
+    font-size: 16px;
+    max-width: 720px;
+    font-weight: 300;
+  }
+
+  .header-badges {
+    display: flex;
+    gap: 12px;
+    margin-top: 28px;
+    flex-wrap: wrap;
+  }
+
+  .hbadge {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 6px 16px;
+    border-radius: 30px;
+    border: 1px solid var(--border);
+    background: rgba(255,255,255,0.03);
+    color: rgba(255,255,255,0.8);
+  }
+
+  .tab-bar {
+    background: rgba(17, 24, 39, 0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.3);
+  }
+
+  .tabs {
+    max-width: 1140px;
+    margin: 0 auto;
+    display: flex;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding: 0 12px;
+  }
+
+  .tabs::-webkit-scrollbar { display: none; }
+
+  .tab {
+    padding: 20px 24px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    border: none;
+    background: none;
+    border-bottom: 3px solid transparent;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .tab:hover { color: var(--text); }
+  .tab.active-aws { color: var(--aws); border-bottom-color: var(--aws); }
+  .tab.active-azure { color: var(--azure); border-bottom-color: var(--azure); }
+  .tab.active-gcp { color: var(--gcp); border-bottom-color: var(--gcp); }
+  .tab.active-sec { color: var(--sec); border-bottom-color: var(--sec); }
+  .tab.active-plain { color: var(--text); border-bottom-color: var(--text); }
+
+  .section { display: none; padding: 48px 0 72px; animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+  .section.active { display: block; }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .sec-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  .sec-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 30px;
+    letter-spacing: -0.8px;
+    margin-bottom: 12px;
+  }
+
+  .sec-desc {
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 760px;
+    margin-bottom: 40px;
+    font-weight: 300;
+  }
+
+  .comp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+    margin-bottom: 48px;
+  }
+
+  .comp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow);
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .comp-card:hover {
+    border-color: var(--card-accent, var(--aws));
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  }
+
+  .comp-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: var(--card-accent, var(--aws));
+  }
+
+  .comp-filename {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--card-accent, var(--aws));
+    background: var(--card-bg, var(--aws-light));
+    padding: 4px 12px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 16px;
+    letter-spacing: 0.05em;
+  }
+
+  .comp-name {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    margin-bottom: 10px;
+    letter-spacing: -0.4px;
+  }
+
+  .comp-desc {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  .comp-analogy {
+    background: var(--surface2);
+    border-left: 4px solid var(--card-accent, var(--aws));
+    padding: 12px 16px;
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 20px;
+  }
+
+  .analogy-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--card-accent, var(--aws));
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    font-weight: 600;
+  }
+
+  .analogy-text {
+    font-size: 13px;
+    color: var(--text);
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .detail-rows { display: flex; flex-direction: column; gap: 8px; }
+
+  .detail-row {
+    display: flex;
+    gap: 12px;
+    font-size: 13px;
+    align-items: flex-start;
+  }
+
+  .detail-key {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    width: 90px;
+    padding-top: 2px;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .detail-val { color: var(--text); line-height: 1.4; }
+
+  .arch-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 40px;
+    margin-bottom: 48px;
+    box-shadow: var(--shadow);
+  }
+
+  .arch-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .arch-diagram {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .arch-layer {
+    display: flex;
+    gap: 16px;
+    align-items: stretch;
+  }
+
+  .arch-layer-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    flex-shrink: 0;
+    width: 30px;
+    text-align: center;
+    background: var(--surface2);
+    border-radius: 6px;
+    padding: 8px 0;
+  }
+
+  .arch-blocks { display: flex; gap: 12px; flex: 1; flex-wrap: wrap; }
+
+  .arch-block {
+    flex: 1;
+    min-width: 140px;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    font-size: 13px;
+    font-weight: 500;
+    background: var(--surface2);
+  }
+
+  .arch-block-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .arch-block-sub { font-size: 11px; color: var(--muted); font-weight: 300; }
+
+  .arch-arrow {
+    text-align: center;
+    font-size: 20px;
+    color: var(--muted);
+    margin: -6px 0;
+  }
+
+  .ctable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-bottom: 48px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+  }
+
+  .ctable th {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 18px;
+    text-align: left;
+    font-weight: 600;
+    background: #1f2937;
+    border-bottom: 2px solid var(--border);
+  }
+
+  .ctable th.aws-header { color: var(--aws); border-bottom-color: var(--aws); }
+  .ctable th.azure-header { color: var(--azure); border-bottom-color: var(--azure); }
+  .ctable th.gcp-header { color: var(--gcp); border-bottom-color: var(--gcp); }
+
+  .ctable td {
+    padding: 18px;
+    border-top: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.6;
+  }
+
+  .ctable td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    background: rgba(255,255,255,0.01);
+    white-space: nowrap;
+    width: 160px;
+  }
+
+  .ctable tr:hover td { background: rgba(255, 255, 255, 0.02); }
+
+  .threat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+    margin-bottom: 48px;
+  }
+
+  .threat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--threat-color, var(--sec));
+  }
+
+  .threat-severity {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--threat-color, var(--sec));
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  .threat-name { font-weight: 700; font-size: 18px; margin-bottom: 10px; letter-spacing: -0.3px; }
+  .threat-desc { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 18px; font-weight: 300; }
+
+  .mitigations-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  .mitigation-item {
+    display: flex;
+    gap: 10px;
+    font-size: 13px;
+    margin-bottom: 6px;
+    align-items: flex-start;
+  }
+
+  .mit-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #10b981;
+    flex-shrink: 0;
+    margin-top: 6px;
+  }
+
+  .quiz-wrap { max-width: 760px; }
+
+  .quiz-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px;
+    margin-bottom: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .quiz-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    margin-bottom: 12px;
+  }
+
+  .quiz-q { font-weight: 600; font-size: 17px; margin-bottom: 20px; line-height: 1.5; }
+
+  .quiz-opts { display: flex; flex-direction: column; gap: 10px; }
+
+  .quiz-opt {
+    padding: 14px 18px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-family: 'Outfit', sans-serif;
+    text-align: left;
+    color: var(--text);
+    transition: all 0.2s ease;
+  }
+
+  .quiz-opt:hover:not(.disabled) { border-color: var(--aws); background: rgba(255,153,0,0.05); }
+  .quiz-opt.correct { background: rgba(16, 185, 129, 0.15); border-color: #10b981; color: #34d399; font-weight: 500; }
+  .quiz-opt.wrong { background: rgba(239, 68, 68, 0.15); border-color: #ef4444; color: #f87171; }
+  .quiz-opt.disabled { pointer-events: none; }
+
+  .quiz-explain {
+    margin-top: 16px;
+    padding: 16px 20px;
+    background: rgba(0,0,0,0.2);
+    border-left: 3px solid var(--muted);
+    border-radius: 4px;
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.6;
+    display: none;
+    font-weight: 300;
+  }
+
+  .quiz-explain.show { display: block; }
+  .quiz-explain strong { color: var(--text); font-weight: 600; }
+
+  .score-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    box-shadow: var(--shadow);
+  }
+
+  .score-label { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); letter-spacing: 0.1em; }
+  .score-val { font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 24px; color: var(--aws); }
+
+  .cs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    background: var(--surface);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    margin-bottom: 32px;
+    border: 1px solid var(--border);
+  }
+
+  .cs-table th {
+    padding: 14px 18px;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    background: #1f2937;
+    color: var(--text);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .cs-table td {
+    padding: 14px 18px;
+    border-top: 1px solid var(--border);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+
+  .cs-table td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    background: rgba(255,255,255,0.02);
+    color: var(--aws);
+    white-space: nowrap;
+    width: 180px;
+  }
+
+  .cs-table tr:nth-child(even) td:not(:first-child) { background: rgba(255,255,255,0.01); }
+
+  footer {
+    background: #070a13;
+    border-top: 1px solid var(--border);
+    color: var(--muted);
+    padding: 32px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+
+  footer .container { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+
+  @media (max-width: 768px) {
+    .comp-grid, .threat-grid { grid-template-columns: 1fr; }
+    .arch-layer { flex-direction: column; }
+    .arch-layer-label { writing-mode: horizontal-tb; transform: none; width: 100%; height: auto; text-align: left; padding: 6px 12px; }
+    footer .container { flex-direction: column; text-align: center; }
+  }
+</style>
 </head>
 <body>
-<h1>Your full HTML was provided — save this file locally.</h1>
-<p>For full fidelity, copy the original code you shared into this file.</p>
+
+<div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+<header>
+  <div class="container">
+    <div class="header-eyebrow">// Cloud-Native Workload Management</div>
+    <h1>
+      Cross-Cloud <span class="gradient-text">Abstraction Systems</span>
+    </h1>
+    <p class="header-desc">The core architectural blueprint analyzing immutable infra pipelines, multi-tenant cluster surfaces, and structural security perimeters across AWS, Azure, and GCP.</p>
+    <div class="header-badges">
+      <span class="hbadge">Kubernetes (Opaques)</span>
+      <span class="hbadge">Compute Abstraction</span>
+      <span class="hbadge">IMDSv2 Isolation</span>
+      <span class="hbadge">IAM OIDC Federation</span>
+      <span class="hbadge">Service Meshes</span>
+      <span class="hbadge">GitOps Controllers</span>
+    </div>
+  </div>
+</header>
+
+<div class="tab-bar">
+  <div class="tabs" id="tabBar">
+    <button class="tab active-aws" onclick="switchTab('aws', 'active-aws', this)">Amazon Web Services</button>
+    <button class="tab" onclick="switchTab('azure', 'active-azure', this)">Microsoft Azure</button>
+    <button class="tab" onclick="switchTab('gcp', 'active-gcp', this)">Google Cloud Platform</button>
+    <button class="tab" onclick="switchTab('compare', 'active-plain', this)">Matrix Breakdown</button>
+    <button class="tab" onclick="switchTab('security', 'active-sec', this)">Workload Security</button>
+    <button class="tab" onclick="switchTab('cheatsheet', 'active-plain', this)">Quick Sheet</button>
+    <button class="tab" onclick="switchTab('quiz', 'active-plain', this)">Systems Quiz</button>
+  </div>
+</div>
+
+<!-- AWS SECTION -->
+<div class="section active" id="aws">
+  <div class="container">
+    <div class="sec-label" style="color:var(--aws)">// Elastic Compute & Orchestration</div>
+    <div class="sec-title">AWS Cloud-Native Topography</div>
+    <p class="sec-desc">AWS decouples runtime compute from orchestration control planes, relying on hardware-assisted virtualization alongside tight IAM execution policies mapped through OpenID Connect.</p>
+
+    <div class="arch-wrap">
+      <div class="arch-title"><span style="color:var(--aws)">⬡</span> Elastic Kubernetes Service (EKS) Control Architecture</div>
+      <div class="arch-diagram">
+        <div class="arch-layer">
+          <div class="arch-layer-label">Ingress</div>
+          <div class="arch-blocks">
+            <div class="arch-block">
+              <div class="arch-block-name">AWS ALB Controller</div>
+              <div class="arch-block-sub">Routes Layer 7 targets via TargetGroupBinding constructs.</div>
+            </div>
+          </div>
+        </div>
+        <div class="arch-arrow">⬇ IAM Role Assumption (IRSA) via OIDC</div>
+        <div class="arch-layer">
+          <div class="arch-layer-label">Compute</div>
+          <div class="arch-blocks">
+            <div class="arch-block" style="background:var(--aws-light); border-color:var(--aws-mid)">
+              <div class="arch-block-name" style="color:var(--aws)">Managed Node Groups</div>
+              <div class="arch-block-sub">EC2 Auto Scaling instances utilizing AWS-optimized VPC CNI.</div>
+            </div>
+            <div class="arch-block" style="background:var(--aws-light); border-color:var(--aws-mid)">
+              <div class="arch-block-name" style="color:var(--aws)">AWS Fargate Profile</div>
+              <div class="arch-block-sub">Serverless, isolated pod footprints executing on custom Firecracker microVMs.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp-grid">
+      <div class="comp-card" style="--card-accent:var(--aws); --card-bg:var(--aws-light)">
+        <div class="comp-filename">IRSA (IAM Roles for Service Accounts)</div>
+        <div class="comp-name">Cryptographic Pod Identity Mapping</div>
+        <div class="comp-desc">Bypasses local node credential attachment by configuring the EKS cluster as an OIDC Identity Provider, injecting AWS STS tokens straight into the pod environment.</div>
+        <div class="comp-analogy">
+          <div class="analogy-label">// Architectural Analogy</div>
+          <div class="analogy-text">Instead of giving a hotel master key card to the entire cleaning staff (the node), each housekeeper (the pod) receives an ephemeral, single-room digital barcode sent to their personal device.</div>
+        </div>
+        <div class="detail-rows">
+          <div class="detail-row"><div class="detail-key">Mechanism</div><div class="detail-val">OIDC Federation matching JWT claims to AWS AssumeRoleWithWebIdentity configurations.</div></div>
+          <div class="detail-row"><div class="detail-key">Variables</div><div class="detail-val"><code>AWS_ROLE_ARN</code>, <code>AWS_WEB_IDENTITY_TOKEN_FILE</code></div></div>
+        </div>
+      </div>
+
+      <div class="comp-card" style="--card-accent:var(--aws); --card-bg:var(--aws-light)">
+        <div class="comp-filename">Firecracker MicroVMs</div>
+        <div class="comp-name">Fargate Isolated Serverless Runtimes</div>
+        <div class="comp-desc">An open-source virtualization tech purpose-built for serverless containers. Combines the rapid initialization properties of containers with the memory boundaries of hypervisors.</div>
+        <div class="detail-rows">
+          <div class="detail-row"><div class="detail-key">Isolation Layer</div><div class="detail-val">Hardware virtualization boundaries using Linux KVM. Skips shared OS kernel vulnerabilities.</div></div>
+        </div>
+      </div>
+
+      <div class="comp-card" style="--card-accent:var(--aws); --card-bg:var(--aws-light)">
+        <div class="comp-filename">VPC CNI Plugin</div>
+        <div class="comp-name">Native Network Addressing Performance</div>
+        <div class="comp-desc">Assigns native VPC private IP allocations directly to Kubernetes pods by binding Elastic Network Interfaces (ENIs) directly into the node topology.</div>
+        <div class="detail-rows">
+          <div class="detail-row"><div class="detail-key">Latency Impact</div><div class="detail-val">Zero encapsulation overhead; eliminates overlay network encapsulation models like VXLAN.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- AZURE SECTION -->
+<div class="section" id="azure">
+  <div class="container">
+    <div class="sec-label" style="color:var(--azure)">// Enterprise Resource Orchestration</div>
+    <div class="sec-title">Azure Cloud-Native Topography</div>
+    <p class="sec-desc">Azure orchestrates workloads around native Azure Resource Manager (ARM) tracking structures, leveraging Entra ID Workload Identities to abstract persistent secrets.</p>
+
+    <div class="arch-wrap">
+      <div class="arch-title"><span style="color:var(--azure)">⬡</span> Azure Kubernetes Service (AKS) Architecture Core</div>
+      <div class="arch-diagram">
+        <div class="arch-layer">
+          <div class="arch-layer-label">Identity</div>
+          <div class="arch-blocks">
+            <div class="arch-block">
+              <div class="arch-block-name">Entra ID Tenant</div>
+              <div class="arch-block-sub">Issues federated tokens mapped via Managed Identities.</div>
+            </div>
+          </div>
+        </div>
+        <div class="arch-arrow">⬇ Azure CNI Overlay Routing (eBPF Data Path)</div>
+        <div class="arch-layer">
+          <div class="arch-layer-label">Nodes</div>
+          <div class="arch-blocks">
+            <div class="arch-block" style="background:var(--azure-light); border-color:var(--azure-mid)">
+              <div class="arch-block-name" style="color:var(--azure)">System Node Pools</div>
+              <div class="arch-block-sub">Houses critical cluster control infrastructure (CoreDNS, Metrics).</div>
+            </div>
+            <div class="arch-block" style="background:var(--azure-light); border-color:var(--azure-mid)">
+              <div class="arch-block-name" style="color:var(--azure)">User Node Pools</div>
+              <div class="arch-block-sub">Hosts distinct business microservice payloads (isolated via taints).</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp-grid">
+      <div class="comp-card" style="--card-accent:var(--azure); --card-bg:var(--azure-light)">
+        <div class="comp-filename">Entra ID Workload Identity</div>
+        <div class="comp-name">Federated Credential Attestation</div>
+        <div class="comp-desc">Swaps legacy Azure Pod Identity configurations with modern service account token projection mechanisms to declare access privileges on ARM APIs without credentials.</div>
+        <div class="comp-analogy">
+          <div class="analogy-label">// Architectural Analogy</div>
+          <div class="analogy-text">An international driver's license framework. The local authority (Kubernetes) verifies your baseline status and vouches for you to clear the federal border (Azure Resource Manager).</div>
+        </div>
+        <div class="detail-rows">
+          <div class="detail-row"><div class="detail-key">Component</div><div class="detail-val">Mutating Admission Webhook injecting signed service tokens via OpenID Connect.</div></div>
+        </div>
+      </div>
+
+      <div class="comp-card" style="--card-accent:var(--azure); --card-bg:var(--azure-light)">
+        <div class="comp-filename">Azure CNI (with Cilium)</div>
+        <div class="comp-name">eBPF-Driven Multi-Tenant Data Paths</div>
+        <div class="comp-desc">Combines native IP assignment parameters with an eBPF network engine to process high-throughput packet routing and network policies without using iptables rules.</div>
+        <div class="detail-rows">
+          <div class="detail-row"><div class="detail-key">Advantage</div><div class="detail-val">Improves performance metrics while scaling security enforcement rules across dense pod environments.</div></div>
+        </div>
+      </div>
+
+      <div class="comp-card" style="--card-accent:var(--azure); --card-bg:var(--azure-light)">
+        <div class="comp-filename">Azure Container Apps (ACA)</div>
+        <div class="comp-name">Serverless Container Abstraction</div>
+        <div class="comp-desc">An abstraction tier built on top of AKS, KEDA (Event-driven autoscaling), and Dapr, removing the operational overhead of manually tuning nodes or control plane metrics.</div>
+        <div class="detail-rows">
+          <div class="detail-row"><div class="detail-key">Scaling</div><div class="detail-val">Scale-to-zero capabilities driven by external metrics pipelines (e.g., HTTP queue depths).</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GCP SECTION -->
+<div class="section" id="gcp">
+  <div class="container">
+    <div class="sec-label" style="color:var(--gcp)">// Data Analytics & Infrastructure Engineering</div>
+    <div class="sec-title">GCP Cloud-Native Topography</div>
+    <p class="sec-desc">Google Cloud wraps container runtimes around deep kernel sandboxing abstractions while maintaining automated control plane optimization engines.</p>
+
+    <div class="arch-wrap">
+      <div class="arch-title"><span style="color:var(--gcp)">⬡</span> Google Kubernetes Engine (GKE) Autopilot Pipeline</div>
+      <div class="arch-diagram">
+        <div class="arch-layer">
+          <div class="arch-layer-label">Engine</div>
+          <div class="arch-blocks">
+            <div class="arch-block">
+              <div class="arch-block-name">GKE Autopilot Provisioner</div>
+              <div class="arch-block-sub">Fully manages, scales, and locks down compute node pools automatically.</div>
+            </div>
+          </div>
+        </div>
+        <div class="arch-arrow">⬇ Workload Identity Federation Mapping</div>
+        <div class="arch-layer">
+          <div class="arch-layer-label">Sandbox</div>
+          <div class="arch-blocks">
+            <div class="arch-block" style="background:var(--gcp-light); border-color:var(--gcp-mid)">
+              <div class="arch-block-name" style="color:var(--gcp)">gVisor Runtime (Sandbox)</div>
+              <div class="arch-block-sub">Intercepts application system calls through an isolated user-space kernel wrapper.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp-grid">
+      <div class="comp-card" style="--card-accent:var(--gcp); --card-bg:var(--gcp-light)">
+        <div class="comp-filename">gVisor (runsc)</div>
+        <div class="comp-name">User-Space Application Kernel Sandboxing</div>
+        <div class="comp-desc">Intercepts and handles container execution system calls via an isolated user-space application framework written in Go, blocking raw container communication paths to the host Linux kernel.</div>
+        <div class="comp-analogy">
+          <div class="analogy-label">// Architectural Analogy</div>
+          <div class="analogy-text">An embassy checkpoint room. Guests never speak directly with internal government representatives; an intermediate officer receives, screens, and processes every single query.</div>
+        </div>
+        <div class="detail-rows">
+          <div class="detail-row"><div class="detail-key">Defense Focus</div><div class="detail-val">Defends hosts against container breakout exploits (e.g., Linux kernel zero-day vectors).</div></div>
+        </div>
+      </div>
+
+      <div class="comp-card" style="--card-accent:var(--gcp); --card-bg:var(--gcp-light)">
+        <div class="comp-filename">GCP Workload Identity</div>
+        <div class="comp-name">Native Identity Pool Linkage</div>
+        <div class="comp-desc">Maps a localized Kubernetes Service Account directly to a GCP IAM Service Account profile, abstracting security credentials away from microservice containers.</div>
+        <div class="detail-rows">
+          <div class="detail-row"><div class="detail-key">Target Endpoint</div><div class="detail-val">Automatically routes lookups to internal Cloud Storage, BigQuery, and Pub/Sub APIs.</div></div>
+        </div>
+      </div>
+
+      <div class="comp-card" style="--card-accent:var(--gcp); --card-bg:var(--gcp-light)">
+        <div class="comp-filename">Autopilot Architecture</div>
+        <div class="comp-name">Enforced SLA Isolation Controls</div>
+        <div class="comp-desc">An orchestration model that locks down cluster operational access paths, shifts security boundaries to pod definitions, and automates resource node provisioning.</div>
+        <div class="detail-rows">
+          <div class="detail-row"><div class="detail-key">Restrictions</div><div class="detail-val">Blocks privileged containers, disables SSH access to host systems, and enforces secure defaults.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MATRIX COMPARISON -->
+<div class="section" id="compare">
+  <div class="container">
+    <div class="sec-label" style="color:var(--text)">// Cloud Paradigm Structural Analysis</div>
+    <div class="sec-title">The Multi-Cloud Architecture Breakdown</div>
+    <p class="sec-desc">A deep-dive technical comparison mapping compute layers, networking fabrics, and security implementations across the three major hyperscalers.</p>
+
+    <table class="ctable">
+      <tr>
+        <th>Architectural Axis</th>
+        <th class="aws-header">Amazon Web Services (AWS)</th>
+        <th class="azure-header">Microsoft Azure</th>
+        <th class="gcp-header">Google Cloud Platform (GCP)</th>
+      </tr>
+      <tr>
+        <td>Managed Kubernetes</td>
+        <td>Elastic Kubernetes Service (EKS)</td>
+        <td>Azure Kubernetes Service (AKS)</td>
+        <td>Google Kubernetes Engine (GKE)</td>
+      </tr>
+      <tr>
+        <td>Pod Networking Model</td>
+        <td>AWS VPC CNI (Native IP allocations bound to ENIs)</td>
+        <td>Azure CNI (Overlay structures or native subnet routing via Cilium eBPF)</td>
+        <td>GCP VPC-Native (Alias IP ranges integrated directly into SDN networks)</td>
+      </tr>
+      <tr>
+        <td>Workload Identity Link</td>
+        <td>IRSA (OIDC Provider configuration mapping to IAM roles via STS)</td>
+        <td>Entra ID Workload Identity (Federated structural credential validation)</td>
+        <td>Workload Identity (Identity Pool mappings to IAM targets)</td>
+      </tr>
+      <tr>
+        <td>Serverless Containers</td>
+        <td>AWS Fargate (Isolated execution running on Firecracker microVMs)</td>
+        <td>Azure Container Apps (Serverless abstraction managed via KEDA)</td>
+        <td>Cloud Run (Serverless processing scaled from Knative systems)</td>
+      </tr>
+      <tr>
+        <td>Container Sandboxing</td>
+        <td>EC2 Nitro Enclaves / Fargate microVM kernel abstraction</td>
+        <td>Kata Containers running on Azure Confidential Compute nodes</td>
+        <td>gVisor sandboxed runtimes (Sentry/Gofer architecture)</td>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<!-- WORKLOAD SECURITY RISKS -->
+<div class="section" id="security">
+  <div class="container">
+    <div class="sec-label" style="color:var(--sec)">// Attack Surfaces & Exploitation Mapping</div>
+    <div class="sec-title">Advanced Cloud-Native Vulnerabilities & Remediations</div>
+    <p class="sec-desc">Technical deep dives into multi-cloud container vulnerabilities, covering metadata exploitation paths, excessive privilege chaining, and cluster takeover vectors.</p>
+
+    <div class="threat-grid">
+      <div class="threat-card" style="--threat-color:var(--aws)">
+        <div class="threat-severity">Critical Vector · AWS/Multi-Cloud</div>
+        <div class="threat-name">IMDSv1 SSRF Token Extraction</div>
+        <div class="threat-desc">Attackers exploit Server-Side Request Forgery (SSRF) vulnerabilities inside a web container to query the legacy Instance Metadata Service (IMDSv1), stealing plain text node IAM role credentials.</div>
+        <div class="mitigations-label">Technical Mitigations</div>
+        <div class="mitigation-item"><div class="mit-dot"></div><div>Enforce IMDSv2 tenant-wide, forcing a session-oriented token handshake via HTTP PUT.</div></div>
+        <div class="mitigation-item"><div class="mit-dot"></div><div>Set token response hop limits to 1 to block transit through container network bridges.</div></div>
+      </div>
+
+      <div class="threat-card" style="--threat-color:var(--azure)">
+        <div class="threat-severity">Critical Vector · Azure Control Plane</div>
+        <div class="threat-name">Azure API Token Replay</div>
+        <div class="threat-desc">Misconfigured cluster pods mounting cleartext Azure Managed Identity client secrets allow an attacker to dump access tokens straight from disk or environmental variables, enabling rogue ARM API elevation.</div>
+        <div class="mitigations-label">Technical Mitigations</div>
+        <div class="mitigation-item"><div class="mit-dot"></div><div>Migrate all legacy Azure Pod Identities to modern Entra ID Workload Identities.</div></div>
+        <div class="mitigation-item"><div class="mit-dot"></div><div>Enforce Azure Policy engines to block pods from picking up raw host identity metadata.</div></div>
+      </div>
+
+      <div class="threat-card" style="--threat-color:var(--gcp)">
+        <div class="threat-severity">High Vector · GCP/Container Runtime</div>
+        <div class="threat-name">Shared Host Kernel Escape</div>
+        <div class="threat-desc">A compromised container uses local privilege escalation vulnerabilities to trigger zero-day flaws inside the underlying host Linux kernel, escaping the container boundary to execute code on the parent node.</div>
+        <div class="mitigations-label">Technical Mitigations</div>
+        <div class="mitigation-item"><div class="mit-dot"></div><div>Isolate untrusted internet-facing payloads using sandboxed gVisor runtimes.</div></div>
+        <div class="mitigation-item"><div class="mit-dot"></div><div>Enforce Pod Security Standards to ensure container filesystems remain read-only.</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- QUICK REFERENCE SHEET -->
+<div class="section" id="cheatsheet">
+  <div class="container">
+    <div class="sec-label" style="color:var(--text)">// Platform Engineering Matrix</div>
+    <div class="sec-title">Hyperscaler Command Reference & Environment Variables</div>
+    <p class="sec-desc">A quick-reference guide tracking core environmental markers, endpoint configurations, and programmatic components across cloud environments.</p>
+
+    <table class="cs-table">
+      <tr><th>Cloud Engine</th><th>Identity Metadata Endpoint</th><th>Token/Environment Variable Signature</th><th>Core Risk Vector</th></tr>
+      <tr><td>AWS Identity Layer</td><td><code>http://169.254.169.254/latest/meta-data/</code></td><td><code>AWS_CONTAINER_CREDENTIALS_RELATIVE_URI</code></td><td>SSRF access to IMDSv1 exposes long-lived node execution credentials.</td></tr>
+      <tr><td>Azure Core Fabric</td><td><code>http://169.254.169.254/metadata/identity/oauth2/token</code></td><td><code>AZURE_FEDERATED_TOKEN_FILE</code></td><td>Exposed local configuration keys enable direct lateral movement onto the control plane.</td></tr>
+      <tr><td>GCP Core Engine</td><td><code>http://metadata.google.internal/computeMetadata/v1/</code></td><td>Header Required: <code>Metadata-Flavor: Google</code></td><td>Default Service Account mapping introduces overly permissive cluster control paths.</td></tr>
+    </table>
+
+    <table class="cs-table">
+      <tr><th>Orchestration Tool</th><th>Default Networking Engine</th><th>Isolation Engine Mechanics</th><th>Egress Flow Logic</th></tr>
+      <tr><td>AWS EKS Cluster</td><td>vpc-cni (Native Elastic Network Interfaces)</td><td>Firecracker microVM memory isolation (Fargate profiles)</td><td>NAT Gateway mapping or security group policy routing</td></tr>
+      <tr><td>Azure AKS Cluster</td><td>azure-cni (Cilium eBPF high-throughput engine)</td><td>Kata Container runtimes (Confidential execution nodes)</td><td>Azure Load Balancer configurations or Virtual WAN routing hubs</td></tr>
+      <tr><td>GCP GKE Cluster</td><td>gke-networking (Alias IP structures)</td><td>gVisor intercepting system calls (runsc user-space translation)</td><td>Cloud NAT gateways mapped across VPC subnets</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- SCENARIO ASSESSMENT QUIZ -->
+<div class="section" id="quiz">
+  <div class="container">
+    <div class="sec-label" style="color:var(--text)">// Verification Engine</div>
+    <div class="sec-title">Cloud-Native Solutions Architect Assessment</div>
+    <p class="sec-desc">Evaluate your response capabilities against real-world, production-scale multi-cloud infrastructure incidents.</p>
+
+    <div class="score-bar">
+      <span class="score-label">VERIFIED INCIDENT SCORE</span>
+      <span class="score-val" id="scoreDisplay">—</span>
+      <span class="score-label" id="scoreOf"></span>
+    </div>
+
+    <div class="quiz-wrap" id="quizContainer"></div>
+  </div>
+</div>
+
+<footer>
+  <div class="container">
+    <span>// Multi-Cloud Native Architecture Blueprint</span>
+    <span id="footerScore">Cloud Systems Infrastructure Evaluation</span>
+  </div>
+</footer>
+
+<script>
+  function switchTab(name, activeClass, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => {
+      t.classList.remove('active-aws','active-azure','active-gcp','active-sec','active-plain');
+    });
+    document.getElementById(name).classList.add('active');
+    btn.classList.add(activeClass);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  window.addEventListener('scroll', () => {
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = total > 0 ? (window.scrollY / total) * 100 : 0;
+    document.getElementById('progressFill').style.width = pct + '%';
+  });
+
+  const questions = [
+    {
+      q: "An attacker exploits an SSRF flaw in a web container running on an AWS EKS EC2 node. The cluster uses the legacy IMDSv1 metadata model. How does the attacker compromise the cluster host?",
+      opts: [
+        "By issuing a direct HTTP PUT request to fetch an authenticated management token.",
+        "By querying the plain text metadata URL directly to harvest the underlying node's IAM instance profile credentials.",
+        "By modifying the container's environment variable blocks to alter the AWS_ROLE_ARN.",
+        "By flooding the local node's VPC CNI network driver to trigger a shared-memory buffer overflow."
+      ],
+      answer: 1,
+      explain: "Under **IMDSv1**, simple HTTP GET requests to the metadata endpoint return data without requiring a session token. An attacker exploiting an SSRF vulnerability can read instance metadata directly, steal the node's IAM credentials, and pivot laterally across the cloud environment."
+    },
+    {
+      q: "A financial platform running on Google Cloud Platform (GCP) needs to run untrusted, third-party payment processing code within a GKE cluster. The architect requires strict container isolation to prevent zero-day host kernel breakout exploits. What is the most effective approach?",
+      opts: [
+        "Configuring custom Kubernetes network policies using raw Linux iptables rules.",
+        "Deploying the untrusted application pods into specialized GKE sandboxes utilizing gVisor runtimes.",
+        "Enforcing standard Pod Security Standards to switch the root container to read-only mode.",
+        "Migrating the application payloads into multi-zone GKE Autopilot node pools."
+      ],
+      answer: 1,
+      explain: "**gVisor** intercepts container system calls and runs them through a user-space kernel wrapper written in Go. This sandboxing mechanism prevents untrusted container code from interacting directly with the host Linux kernel, neutralizing host-kernel breakout exploits."
+    },
+    {
+      q: "An engineering team is migrating an application from an old AKS cluster model that used legacy Azure Pod Identities to a modern Azure architecture. They want to eliminate long-lived, disk-mounted cloud credentials completely. Which approach should they implement?",
+      opts: [
+        "Hardcode ARM management credentials within encrypted HashiCorp Vault secrets.",
+        "Configure Entra ID Workload Identity to project short-lived OIDC tokens directly into the service account pools.",
+        "Deploy Azure Container Apps to automatically obscure underlying node identities.",
+        "Enforce strict Azure Policy restrictions to filter raw outbound HTTP metadata traffic."
+      ],
+      answer: 1,
+      explain: "**Entra ID Workload Identity** uses OpenID Connect federation. Kubernetes signs its own service account tokens, which Entra ID validates to issue temporary Azure access tokens. This removes the need for long-lived, on-disk secrets or vulnerable local metadata scraping tools."
+    },
+    {
+      q: "During a network scaling assessment, a cloud engineer notes that an EKS cluster is running out of available IP addresses within its primary VPC subnets, even though the cluster node count remains low. Which architectural component is causing this allocation behavior?",
+      opts: [
+        "The CoreDNS engine keeping stale record allocations active.",
+        "The AWS VPC CNI plugin pre-allocating native VPC IP addresses to Elastic Network Interfaces (ENIs) for potential pods.",
+        "AWS Fargate profiles creating duplicate routing tables across multiple availability zones.",
+        "The kube-proxy controller leaking network interfaces during high-frequency scale-downs."
+      ],
+      answer: 1,
+      explain: "The **AWS VPC CNI** plugin provides high performance by assigning native VPC IP addresses directly to pods. To speed up pod creation, it proactively allocates ENIs and warm IP pools to each node. In dense subnets, this strategy can rapidly exhaust available IP addresses."
+    },
+    {
+      q: "An enterprise architect wants to build an automated, declarative multi-cloud pipeline where all infrastructure states across AWS, Azure, and GCP are continuously reconciled against a secure Git repository. Which paradigm fits this requirement?",
+      opts: [
+        "High-frequency CronJobs executing localized cloud CLI deployment scripts.",
+        "GitOps architecture using controllers like ArgoCD or Flux to continually poll and reconcile live states.",
+        "Centralized webhooks running from an isolated on-premises Jenkins server.",
+        "Deploying cloud-native service meshes like Istio to manage resource synchronization loops."
+      ],
+      answer: 1,
+      explain: "**GitOps** architectures utilize pull-based controllers (such as ArgoCD or Flux) that treat Git repositories as the single source of truth. These controllers run loops inside clusters to detect drift between desired configuration states and live multi-cloud environments, automatically remediating variances without human intervention."
+    }
+  ];
+
+  let score = 0;
+  let answered = 0;
+
+  function renderQuiz() {
+    const c = document.getElementById('quizContainer');
+    questions.forEach((q, qi) => {
+      const div = document.createElement('div');
+      div.className = 'quiz-card';
+      div.innerHTML = `
+        <div class="quiz-num">// Incident Scenario ${qi + 1} of ${questions.length}</div>
+        <div class="quiz-q">${q.q}</div>
+        <div class="quiz-opts">
+          ${q.opts.map((o, oi) => `<button class="quiz-opt" onclick="answerQ(${qi},${oi},this)">${o}</button>`).join('')}
+        </div>
+        <div class="quiz-explain" id="ex-${qi}">${q.explain}</div>
+      `;
+      c.appendChild(div);
+    });
+  }
+
+  function answerQ(qi, chosen, btn) {
+    const q = questions[qi];
+    const card = btn.closest('.quiz-card');
+    const opts = card.querySelectorAll('.quiz-opt');
+    if (opts[0].classList.contains('disabled')) return;
+
+    opts.forEach((o, i) => {
+      o.classList.add('disabled');
+      if (i === q.answer) o.classList.add('correct');
+      else if (i === chosen && chosen !== q.answer) o.classList.add('wrong');
+    });
+
+    document.getElementById('ex-' + qi).classList.add('show');
+    answered++;
+    if (chosen === q.answer) score++;
+
+    document.getElementById('scoreDisplay').textContent = `${score} / ${answered}`;
+    document.getElementById('scoreOf').textContent = `${answered} of ${questions.length} analyzed`;
+    document.getElementById('footerScore').textContent = `Total Architecture Score: ${score} / ${answered}`;
+  }
+
+  renderQuiz();
+</script>
+
 </body>
 </html>
